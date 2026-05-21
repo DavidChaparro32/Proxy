@@ -7,7 +7,14 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: 'https://catalyst-setup-nuqgatev.onslate.com',
+    origin: function(origin, callback) {
+        // Allow any onslate.com subdomain and local dev
+        if (!origin || origin.endsWith('.onslate.com') || origin === 'http://localhost:5173') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
 }));
